@@ -25,7 +25,7 @@ public class main extends JFrame implements ActionListener{
 	
 		textField1.setText(InFix.str);
 		textField2.setText(PostFix.str);
-		textField3.setText(Evaluate.str);
+		textField3.setText(PostFix.result());
 	}
 	public void createLabel() {
 		
@@ -89,8 +89,9 @@ public class main extends JFrame implements ActionListener{
 		btn1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				InFix.str = textField1.getText().replace(" ", "");
-				PostFix.str = InFix.toPostFix(InFix.str);
-				Evaluate.str = Evaluate.result(InFix.str);
+				PostFix.str="";
+				for(int i=0;i<InFix.toPostFix().size();i++)
+					PostFix.str+=InFix.toPostFix().get(i);
 				setTextField();
 			}
 		});
@@ -103,8 +104,7 @@ public class main extends JFrame implements ActionListener{
 		btn2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				PostFix.str = textField2.getText().replace(" ", "");
-				InFix.str = PostFix.toInFix(PostFix.str);
-				//Evaluate.str = Evaluate.value();
+				InFix.str = PostFix.toInFix();
 				setTextField();
 			}
 		});
@@ -118,7 +118,6 @@ public class main extends JFrame implements ActionListener{
 			public void actionPerformed(ActionEvent e) {
 				InFix.str = "";
 				PostFix.str = "";
-				Evaluate.str = "";
 				setTextField();
 			}
 		});

@@ -1,57 +1,20 @@
 package RPN;
 
+import java.util.LinkedList;
 import java.util.Stack;
 
 public class InFix {
 	
 	public static String str;
 	
-	public static String toPostFix(String infix) {
+	public static LinkedList toTokens() {
 		
-		String postfix="";
-		Stack<String> str = InFix2PostFix(infix);
-		for(int i=0; i<str.size(); i++)
-			postfix += str.get(i);
-		return postfix;
-	}
-	
-	public static Stack<String> InFix2PostFix(String str) {
-		
-		Stack<String> infix = strToTokens(str);
-		Stack<String> postfix = new Stack<>();
-        Stack<Character> operator = new Stack<>();
-        char popped;
-
-        for (int i = 0; i < infix.size(); i++) {
-
-        	String s = infix.get(i);
-            char c = s.charAt(0);
-            
-            if (!isOperator(c) || s.length()>1)
-                postfix.push(s);
-            else if (c == ')')
-                while ((popped = operator.pop()) != '(')
-                	postfix.push("" + popped);
-            else {
-                while (!operator.isEmpty() && c != '(' && precedence(operator.peek()) >= precedence(c))
-                	postfix.push("" + operator.pop());
-                operator.push(c);
-            }
-        }
-        while (!operator.isEmpty())
-        	postfix.push("" + operator.pop());
-
-        return postfix;
-	}
-	
-	public static Stack<String> strToTokens(String infix) {
-		
-		Stack<String> tokens = new Stack<>();
+		LinkedList tokens = new LinkedList();
 		String tempStr = "";
-		for(int i=0; i<infix.length(); i++) {
+		for(int i=0; i<InFix.str.length(); i++) {
 			
-			char c = infix.charAt(i);
-			if(!isOperator(c)) {
+			char c = InFix.str.charAt(i);
+			if(!Operator.check(c)) {
 				
 				tempStr += c;
 			}
@@ -59,28 +22,44 @@ public class InFix {
 				
 				if(!tempStr.isEmpty()) {
 					
-					tokens.push(tempStr);
+					tokens.add(tempStr);
 				}
 				tempStr = "";
-				tokens.push("" + c);
+				tokens.add("" + c);
 			}
-			if(i==infix.length()-1)
+			if(i==InFix.str.length()-1)
 				if (!tempStr.isEmpty())
-					tokens.push(tempStr);
+					tokens.add(tempStr);
 		}
 		return tokens;
 	}
 	
-	private static boolean isOperator(char i) {
-    	
-        return precedence(i) > 0;
-    }
-    
-    private static int precedence(char i) {
+	public static LinkedList toPostFix() {
+		
+		LinkedList postfix = new LinkedList();
+        Stack<Character> operator = new Stack();
+        char popped;
 
-        if (i == '(' || i == ')') return 1;
-        else if (i == '-' || i == '+') return 2;
-        else if (i == '*' || i == '/' || i == '^') return 3;
-        else return 0;
-    }
+        for (int i = 0; i < InFix.toTokens().size(); i++) {
+
+        	String s ="";
+        	s+= InFix.toTokens().get(i);
+            char c = s.charAt(0);
+            
+            if (!Operator.check(c) || s.length()>1)
+                postfix.add(s);
+            else if (c == ')')
+                while ((popped = operator.pop()) != '(')
+                	postfix.add(popped);
+            else {
+                while (!operator.isEmpty() && c != '(' && Operator.precedence(operator.peek()) >= Operator.precedence(c))
+                	postfix.add(operator.pop());
+                operator.push(c);
+            }
+        }
+        while (!operator.isEmpty())
+        	postfix.add(operator.pop());
+
+        return postfix;
+	}
 }
