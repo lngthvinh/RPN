@@ -5,15 +5,13 @@ import java.util.Stack;
 
 public class InFix {
 	
-	public static String str;
-	
-	public static LinkedList toTokens() {
+	public static LinkedList toTokens(String infixStr) {
 		
 		LinkedList tokens = new LinkedList();
 		String tempStr = "";
-		for(int i=0; i<InFix.str.length(); i++) {
+		for(int i=0; i<infixStr.length(); i++) {
 			
-			char c = InFix.str.charAt(i);
+			char c = infixStr.charAt(i);
 			if(!Operator.check(c)) {
 				
 				tempStr += c;
@@ -25,25 +23,25 @@ public class InFix {
 					tokens.add(tempStr);
 				}
 				tempStr = "";
-				tokens.add("" + c);
+				tokens.add(c);
 			}
-			if(i==InFix.str.length()-1)
+			if(i==infixStr.length()-1)
 				if (!tempStr.isEmpty())
 					tokens.add(tempStr);
 		}
 		return tokens;
 	}
 	
-	public static LinkedList toPostFix() {
+	public static LinkedList toPostFix(String infixStr) {
 		
 		LinkedList postfix = new LinkedList();
         Stack<Character> operator = new Stack();
         char popped;
 
-        for (int i = 0; i < InFix.toTokens().size(); i++) {
+        for (int i = 0; i < toTokens(infixStr).size(); i++) {
 
         	String s ="";
-        	s+= InFix.toTokens().get(i);
+        	s+= toTokens(infixStr).get(i);
             char c = s.charAt(0);
             
             if (!Operator.check(c) || s.length()>1)

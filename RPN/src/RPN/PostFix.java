@@ -7,13 +7,11 @@ import java.util.Stack;
 
 public class PostFix {
 	
-	public static String str;
-	
-	public static String toInFix() {
+	public static String toInFix(String postfixStr) {
 		
     	LinkedList infix = new LinkedList();
-    	for (int i = 0; i < str.length(); i++) {
-			char c = str.charAt(i);
+    	for (int i = 0; i < postfixStr.length(); i++) {
+			char c = postfixStr.charAt(i);
 			if (Operator.check(c)) {
 				String b ="" + infix.getLast();	infix.removeLast();
 				String a ="" + infix.getLast();	infix.removeLast();
@@ -23,19 +21,21 @@ public class PostFix {
 		}
     	return "" + infix.getLast();
     }
-	public static String result() {
+	public static String result(String infixStr) {
 		
     	LinkedList result = new LinkedList();
-    	for (int i = 0; i < InFix.toPostFix().size(); i++) {
+    	for (int i = 0; i < InFix.toPostFix(infixStr).size(); i++) {
 			
     		String s ="";
-        	s+= InFix.toPostFix().get(i);
+        	s+= InFix.toPostFix(infixStr).get(i);
             char c = s.charAt(0);
 			
     		if (Operator.check(c)) 
     		try {
-    			double b = Double.parseDouble(""+result.getLast()); result.removeLast();
-    			double a = Double.parseDouble(""+result.getLast()); result.removeLast();
+    			double b = Double.parseDouble(""+result.getLast()); 
+    			result.removeLast();
+    			double a = Double.parseDouble(""+result.getLast()); 
+    			result.removeLast();
     			result.add(Operator.evaluate(a, b, c).toString());
     		}catch(Exception e) {return "NaN";}
     		else

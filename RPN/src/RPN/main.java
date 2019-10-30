@@ -20,12 +20,13 @@ public class main extends JFrame implements ActionListener{
 	private JLabel lb0, lb1, lb2, lb3;
 	private JTextField textField1, textField2, textField3;
 	private JButton btn1, btn2, btn3;
+	private String infixStr="", postfixStr="";
 	
 	public void setTextField() {
 	
-		textField1.setText(InFix.str);
-		textField2.setText(PostFix.str);
-		textField3.setText(PostFix.result());
+		textField1.setText(infixStr);
+		textField2.setText(postfixStr);
+		textField3.setText(PostFix.result(infixStr));
 	}
 	public void createLabel() {
 		
@@ -88,10 +89,10 @@ public class main extends JFrame implements ActionListener{
 		btn1 = new JButton("InFix to PostFix");
 		btn1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				InFix.str = textField1.getText().replace(" ", "");
-				PostFix.str="";
-				for(int i=0;i<InFix.toPostFix().size();i++)
-					PostFix.str+=InFix.toPostFix().get(i);
+				infixStr = textField1.getText().replace(" ", "");
+				postfixStr="";
+				for(int i=0;i<InFix.toPostFix(infixStr).size();i++)
+					postfixStr+=InFix.toPostFix(infixStr).get(i);
 				setTextField();
 			}
 		});
@@ -103,8 +104,8 @@ public class main extends JFrame implements ActionListener{
 		btn2 = new JButton("PostFix to InFix");
 		btn2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				PostFix.str = textField2.getText().replace(" ", "");
-				InFix.str = PostFix.toInFix();
+				postfixStr = textField2.getText().replace(" ", "");
+				infixStr = PostFix.toInFix(postfixStr);
 				setTextField();
 			}
 		});
@@ -116,9 +117,9 @@ public class main extends JFrame implements ActionListener{
 		btn3 = new JButton("Reset");
 		btn3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				InFix.str = "";
-				PostFix.str = "";
-				setTextField();
+				textField1.setText("");
+				textField2.setText("");
+				textField3.setText("");
 			}
 		});
 		GridBagConstraints gbc_btn3 = new GridBagConstraints();
