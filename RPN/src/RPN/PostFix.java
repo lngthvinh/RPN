@@ -1,46 +1,162 @@
 package RPN;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.LinkedList;
 import java.util.Stack;
 
 public class PostFix {
 	
-	public static String toInFix(String postfixStr) {
+	private String str;
+	private LinkedList<String> tokens;
+	private String result;
+
+	public String getStr() {
 		
-    	LinkedList infix = new LinkedList();
-    	for (int i = 0; i < postfixStr.length(); i++) {
-			char c = postfixStr.charAt(i);
-			if (Operator.check(c)) {
-				String b ="" + infix.getLast();	infix.removeLast();
-				String a ="" + infix.getLast();	infix.removeLast();
-				infix.add("(" + a + c + b + ")");
-			} else
-				infix.add("" + c);
-		}
-    	return "" + infix.getLast();
+		return str;
+	}
+	
+	public void setStr(String str) {
+		
+		this.str = str;
+	}
+
+	public LinkedList<String> getTokens() {
+		
+		return tokens;
+	}
+	
+	public String getResult() {
+		
+		return result;
+	}
+	
+	public PostFix() {}
+	public PostFix(String str) {
+		
+		this.str = str;
+		this.tokens = postfixToTokens(str);
+		this.result = result();
+	}
+	public PostFix(InFix infix) {
+		
+		String Str = "";
+		for(int i=0; i<infixToPostfix(infix).size(); i++)
+			Str += infixToPostfix(infix).get(i) + " ";
+		this.str = Str;
+		this.tokens =  infixToPostfix(infix);
+		this.result = result();
+	}
+	//Kiểm tra kí tự toán tử
+	private boolean isOperator(String s) {
+    	
+        return precedence(s) > 0;
     }
-	public static String result(String infixStr) {
+	//Xét độ ưu tiên toán tử
+    private int precedence(String s) {
+
+        if (s.equals("(") || s.equals(")")) return 1;
+        else if (s.equals("+") || s.equals("-")) return 2;
+        else if (s.equals("*") || s.equals("/") || s.equals("^")) return 3;
+        else if (s.equals("abs") || 
+        		s.equals("sqrt") || 
+        		s.equals("sin") || s.equals("cos") || s.equals("tan") || 
+        		s.equals("ln") || 
+        		s.equals("exp")) return 4;
+        else return 0;
+    }
+    //Sử dụng LinkedList để lưu từng toán tử và toán hạng thành các token
+    private LinkedList<String> postfixToTokens(String str) {
 		
-    	LinkedList result = new LinkedList();
-    	for (int i = 0; i < InFix.toPostFix(infixStr).size(); i++) {
+		LinkedList<String> tokens = new LinkedList<String>();
+		String tempStr = "";
+		//Các token postfix cách nhau bởi khoảng trắng
+		for(int i=0; i<str.length(); i++) {
+			
+			char c = str.charAt(i);
+			
+			if (c != ' ') {
+				
+				tempStr += c;
+			}
+			else {
+				
+				if(!tempStr.isEmpty()) {
+					
+					tokens.add(tempStr);
+				}
+				tempStr = "";
+			}
+			if(i==str.length()-1)
+				if (!tempStr.isEmpty())
+					tokens.add(tempStr);
+		}
+		return tokens;
+	}
+	//Sử dụng LinkedList để lưu postfix sau khi chuyển từ infix
+	private LinkedList<String> infixToPostfix(InFix infix) {
+		
+		LinkedList<String> postfix = new LinkedList<String>();
+        Stack<String> operator = new Stack<String>();
+        String popped;
+
+        for (int i = 0; i < infix.getTokens().size(); i++) {
+
+        	String s = infix.getTokens().get(i);
+            //Nếu là toán hạng thì thêm vào cuối postfix
+            if (!isOperator(s))
+                postfix.add(s);
+            //Nếu là dấu đóng ngoặc “)”: 
+            //lấy các toán tử trong stack ra và cho vào cuối postfix cho đến khi gặp dấu mở ngoặc “(“ 
+            //(Dấu đóng ngoặc cũng phải được đưa ra khỏi stack)
+            else if (s.equals(")"))
+                while (!(popped = operator.pop()).equals("("))
+                	postfix.add(popped);
+            //Nếu là toán tử:
+            //-Chừng nào ở đỉnh stack là toán tử đó có độ ưu tiên lớn hơn toán tử hiện tại thì 
+            //lấy toán tử đó ra khỏi stack và cho ra postfix
+            //-Đưa toán tử hiện tại vào stack
+            else {
+                while (!operator.isEmpty() && !s.equals("(") && precedence(operator.peek()) >= precedence(s))
+                	postfix.add(operator.pop());
+                operator.push(s);
+            }
+        }
+        //Nếu trong stack còn toán tử thì lấy các token trong đó ra và cho lần lượt vào postfix
+        while (!operator.isEmpty())
+        	postfix.add(""+operator.pop());
+
+        return postfix;
+	}
+	
+	private String result() {
+		
+    	LinkedList<String> result = new LinkedList<String>();
+    	for (int i = 0; i < tokens.size(); i++) {
 			
     		String s ="";
-        	s+= InFix.toPostFix(infixStr).get(i);
-            char c = s.charAt(0);
-			
-    		if (Operator.check(c)) 
+        	s+= tokens.get(i);
+			//Nếu toán tử là phép toán 2 ngôi
+    		if (precedence(s) == 2 || precedence(s) == 3) 
     		try {
-    			double b = Double.parseDouble(""+result.getLast()); 
+    			
+    			Operand b = new Operand(""+result.getLast()); 
     			result.removeLast();
-    			double a = Double.parseDouble(""+result.getLast()); 
+    			Operand a = new Operand(""+result.getLast()); 
     			result.removeLast();
-    			result.add(Operator.evaluate(a, b, c).toString());
+    			result.add(Operand.evaluate(a, b, s));
     		}catch(Exception e) {return "NaN";}
-    		else
-    			result.add(s);
+    		//Nếu toán tử là phép toán 1 ngôi
+    		else if (precedence(s) == 4) 
+    		try{
+    			
+    			Operand b = new Operand(""+result.getLast()); 
+    			result.removeLast();
+    			result.add(Operand.evaluate(b, s));
+    		}catch(Exception e) {return "NaN";}
+    		else result.add(s);
     	}
-    	return ""+result.getLast();
+    	try {
+    		
+        	return ""+Double.parseDouble(result.getLast());
+    	}catch(Exception e) {return "NaN";}
     }
 }
