@@ -122,7 +122,7 @@ public class PostFix {
         }
         //Nếu trong stack còn toán tử thì lấy các token trong đó ra và cho lần lượt vào postfix
         while (!operator.isEmpty())
-        	postfix.add(""+operator.pop());
+        	postfix.add(operator.pop());
 
         return postfix;
 	}
@@ -132,31 +132,30 @@ public class PostFix {
     	LinkedList<String> result = new LinkedList<String>();
     	for (int i = 0; i < tokens.size(); i++) {
 			
-    		String s ="";
-        	s+= tokens.get(i);
+    		String s = tokens.get(i);
 			//Nếu toán tử là phép toán 2 ngôi
-    		if (precedence(s) == 2 || precedence(s) == 3) 
-    		try {
+    		if (precedence(s) == 2 || precedence(s) == 3) {
     			
-    			Operand b = new Operand(""+result.getLast()); 
+    			if(result.size()<2) break;
+    			Operand b = new Operand(result.getLast()); 
     			result.removeLast();
-    			Operand a = new Operand(""+result.getLast()); 
+    			Operand a = new Operand(result.getLast()); 
     			result.removeLast();
     			result.add(Operand.evaluate(a, b, s));
-    		}catch(Exception e) {return "NaN";}
+    		}
     		//Nếu toán tử là phép toán 1 ngôi
-    		else if (precedence(s) == 4) 
-    		try{
+    		else if (precedence(s) == 4) {
     			
-    			Operand b = new Operand(""+result.getLast()); 
+    			if(result.size()<1) break;
+    			Operand b = new Operand(result.getLast()); 
     			result.removeLast();
     			result.add(Operand.evaluate(b, s));
-    		}catch(Exception e) {return "NaN";}
+    		}
     		else result.add(s);
     	}
     	try {
     		
-        	return ""+Double.parseDouble(result.getLast());
+        	return result.getLast();
     	}catch(Exception e) {return "NaN";}
     }
 }

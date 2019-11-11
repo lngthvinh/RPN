@@ -21,9 +21,13 @@ public class Operand {
 	
 	//Phép toán 2 ngôi
 	public static String evaluate(Operand o1, Operand o2, String operator) {
-
-		double a = Double.parseDouble(o1.getValue());
-		double b = Double.parseDouble(o2.getValue());
+		
+		double a,b;
+		try {
+			
+			a = Double.parseDouble(o1.getValue());
+			b = Double.parseDouble(o2.getValue());
+		}catch(Exception e) {return "NaN";}
 		
 		double result = 0;
 		switch (operator) {
@@ -40,7 +44,11 @@ public class Operand {
 	//Phép toán 1 ngôi
 	public static String evaluate(Operand o, String operator) {
 
-		double a = Double.parseDouble(o.getValue());
+		double a;
+		try {
+
+			a = Double.parseDouble(o.getValue());
+		}catch(Exception e) {return "NaN";}
 		
 		double result = 0;
 		switch (operator) {

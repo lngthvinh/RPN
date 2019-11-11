@@ -51,7 +51,7 @@ public class InFix {
 		}
 		if(str.charAt(0)=='+')
 			str = str.substring(1);
-		else if(str.charAt(0)=='-' && str.charAt(1)=='(')
+		else if(str.length()>1 && str.charAt(0)=='-' && str.charAt(1)=='(')
 			str = "(-1)*" + str.substring(1);
 		return str;
 	}
