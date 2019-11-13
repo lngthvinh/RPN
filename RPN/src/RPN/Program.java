@@ -162,7 +162,7 @@ public class Program extends JFrame {
 		JButton btnNewButton = new JButton("InFix to PostFix");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				InFix infix = new InFix(textField.getText().replace(" ", ""));
+				InFix infix = new InFix(textField.getText());
 				PostFix postfix = new PostFix(infix);
 				textField.setText(infix.getStr());
 				textField_1.setText(postfix.getStr());

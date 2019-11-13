@@ -15,7 +15,7 @@ public class InFix {
 	public void setStr(String str) {
 		
 		this.str = infixToStandard(str);
-		this.tokens = infixToTokens(str);
+		this.tokens = infixToTokens(this.str);
 	}
 
 	public LinkedList<String> getTokens() {
@@ -40,6 +40,7 @@ public class InFix {
 	//Chuẩn hóa chuỗi
 	private String infixToStandard(String str) {
 		
+		str = str.replace(" ", "");
 		for(int i=0; i<str.length(); i++) {
 			
 			str = str.replace("++", "+");
@@ -48,11 +49,28 @@ public class InFix {
 			str = str.replace("--", "+");
 			str = str.replace("(+", "(");
 			str = str.replace("(-(", "((-1)*(");
+			str = str.replace("(-abs", "((-1)*abs");
+			str = str.replace("(-sqrt", "((-1)*sqrt");
+			str = str.replace("(-sin", "((-1)*sin");
+			str = str.replace("(-cos", "((-1)*cos");
+			str = str.replace("(-tan", "((-1)*tan");
+			str = str.replace("(-ln", "((-1)*ln");
+			str = str.replace("(-log", "((-1)*ln");
+			str = str.replace("(-exp", "((-1)*exp");
 		}
 		if(str.charAt(0)=='+')
 			str = str.substring(1);
-		else if(str.length()>1 && str.charAt(0)=='-' && str.charAt(1)=='(')
-			str = "(-1)*" + str.substring(1);
+		else if(str.charAt(0)=='-')
+			if(	str.length()>1 && str.substring(1, 2).equals("(") ||
+				str.length()>3 && str.substring(1, 4).equals("abs") ||
+				str.length()>4 && str.substring(1, 5).equals("sqrt") ||
+				str.length()>3 && str.substring(1, 4).equals("cos") ||
+				str.length()>3 && str.substring(1, 4).equals("tan") ||
+				str.length()>3 && str.substring(1, 4).equals("abs") ||
+				str.length()>2 && str.substring(1, 3).equals("ln") ||
+				str.length()>3 && str.substring(1, 4).equals("log") ||
+				str.length()>3 && str.substring(1, 4).equals("exp") )
+				str = "(-1)*" + str.substring(1);
 		return str;
 	}
 	//Kiểm tra kí tự toán tử
@@ -69,7 +87,7 @@ public class InFix {
         else if (s.equals("abs") || 
         		s.equals("sqrt") || 
         		s.equals("sin") || s.equals("cos") || s.equals("tan") || 
-        		s.equals("ln") || 
+        		s.equals("ln") || s.equals("log") ||
         		s.equals("exp")) return 4;
         else return 0;
     }
@@ -82,49 +100,53 @@ public class InFix {
 
 			//Kiểm tra phát hiện toán tử 1 ngôi
 			String s = "";
-			if(i < str.length()-2 &&  str.substring(i, i+2)=="abs") {
-				//i nhỏ hơn str.length()-2 vì chuỗi "abs" kiểm tra có 3 kí tự tránh lỗi từ str.substring()
+			if(i < str.length()-3 && str.substring(i, i+3).equals("abs")) {
+				//i nhỏ hơn str.length()-3 vì chuỗi "abs" kiểm tra có 3 kí tự tránh lỗi từ str.substring()
 				s += "abs";
 				i=i+2;
 			}
-			else if(i < str.length()-3 && str.substring(i, i+3)=="sqrt") {
+			else if(i < str.length()-4 && str.substring(i, i+4).equals("sqrt")) {
 				
 				s += "sqrt";
 				i=i+3;
 			}
-			else if(i < str.length()-2 && str.substring(i, i+2)=="sin") {
+			else if(i < str.length()-3 && str.substring(i, i+3).equals("sin")) {
 				
 				s += "sin";
 				i=i+2;
 			}
-			else if(i < str.length()-2 && str.substring(i, i+2)=="cos") {
+			else if(i < str.length()-3 && str.substring(i, i+3).equals("cos")) {
 				
 				s += "cos";
 				i=i+2;
 			}
-			else if(i < str.length()-2 && str.substring(i, i+2)=="tan") {
+			else if(i < str.length()-3 && str.substring(i, i+3).equals("tan")) {
 				
 				s += "tan";
 				i=i+2;
 			}
-			else if(i < str.length()-1 && str.substring(i, i+1)=="ln") {
+			else if(i < str.length()-2 && str.substring(i, i+2).equals("ln")) {
 				
 				s += "ln";
 				i=i+1;
 			}
-			else if(i < str.length()-2 && str.substring(i, i+2)=="exp") {
+			else if(i < str.length()-3 && str.substring(i, i+3).equals("log")) {
+				
+				s += "log";
+				i=i+2;
+			}
+			else if(i < str.length()-3 && str.substring(i, i+3).equals("exp")) {
 				
 				s += "exp";
 				i=i+2;
 			}
 			else s += str.charAt(i);
-			//Kiểm tra phân biệt toán tử 2 ngôi và toán hạng
-			if(!isOperator(s) || s.equals("-") && i==0 || s.equals("-") && isOperator(""+str.charAt(i-1))) {
-				//Kiểm tra ko phải toán tử hoặc kiểm tra toán hạng có âm
-				//Nếu thỏa thì lấy ra toán hạng lưu và chuỗi tạm thời
+			//Kiểm tra nếu là toán hạng thì thêm vào chuỗi tạm thời
+			if(!isOperator(s) || s.equals("-") && i==0 || s.equals("-") && str.charAt(i-1)=='(') {
+				
 				tempStr += s;
 			}
-			//Nếu là toán tử 2 ngôi
+			//Nếu là toán tử thì
 			else {
 				//Kiểm tra chuỗi tạm thời tồn tại toán hạng thì thêm vào List
 				if(!tempStr.isEmpty()) {

@@ -58,7 +58,8 @@ public class Operand {
 			case "sin": result = Math.sin(a);	break;
 			case "cos": result = Math.cos(a);	break;
 			case "tan": result = Math.tan(a); break;
-			case "ln": result = Math.log10(a); break;
+			case "ln": result = Math.log(a); break;
+			case "log": result = Math.log10(a); break;
 			case "exp": result = Math.exp(a); break;
 		}
         return Double.toString(result);

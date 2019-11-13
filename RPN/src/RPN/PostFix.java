@@ -17,6 +17,8 @@ public class PostFix {
 	public void setStr(String str) {
 		
 		this.str = str;
+		this.tokens = postfixToTokens(str);
+		this.result = result();
 	}
 
 	public LinkedList<String> getTokens() {
@@ -59,7 +61,7 @@ public class PostFix {
         else if (s.equals("abs") || 
         		s.equals("sqrt") || 
         		s.equals("sin") || s.equals("cos") || s.equals("tan") || 
-        		s.equals("ln") || 
+        		s.equals("ln") || s.equals("log") ||
         		s.equals("exp")) return 4;
         else return 0;
     }
