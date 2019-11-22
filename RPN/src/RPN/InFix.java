@@ -48,25 +48,24 @@ public class InFix {
 			str = str.replace("-+", "-");
 			str = str.replace("--", "+");
 			str = str.replace("(+", "(");
-			str = str.replace("(-(", "((-1)*(");
+			str = str.replace("-(", "(-1)*(");
 			str = str.replace("(-abs", "((-1)*abs");
 			str = str.replace("(-sqrt", "((-1)*sqrt");
 			str = str.replace("(-sin", "((-1)*sin");
 			str = str.replace("(-cos", "((-1)*cos");
 			str = str.replace("(-tan", "((-1)*tan");
 			str = str.replace("(-ln", "((-1)*ln");
-			str = str.replace("(-log", "((-1)*ln");
+			str = str.replace("(-log", "((-1)*log");
 			str = str.replace("(-exp", "((-1)*exp");
 		}
 		if(str.charAt(0)=='+')
 			str = str.substring(1);
 		else if(str.charAt(0)=='-')
-			if(	str.length()>1 && str.substring(1, 2).equals("(") ||
-				str.length()>3 && str.substring(1, 4).equals("abs") ||
+			if(	str.length()>3 && str.substring(1, 4).equals("abs") ||
 				str.length()>4 && str.substring(1, 5).equals("sqrt") ||
+				str.length()>3 && str.substring(1, 4).equals("sin") ||
 				str.length()>3 && str.substring(1, 4).equals("cos") ||
 				str.length()>3 && str.substring(1, 4).equals("tan") ||
-				str.length()>3 && str.substring(1, 4).equals("abs") ||
 				str.length()>2 && str.substring(1, 3).equals("ln") ||
 				str.length()>3 && str.substring(1, 4).equals("log") ||
 				str.length()>3 && str.substring(1, 4).equals("exp") )
@@ -142,7 +141,10 @@ public class InFix {
 			}
 			else s += str.charAt(i);
 			//Kiểm tra nếu là toán hạng thì thêm vào chuỗi tạm thời
-			if(!isOperator(s) || s.equals("-") && i==0 || s.equals("-") && str.charAt(i-1)=='(') {
+			if(!isOperator(s) || s.equals("-") && i==0 || 
+					s.equals("-") && str.charAt(i-1)=='(' || 
+					s.equals("-") && str.charAt(i-1)=='*' || 
+					s.equals("-") && str.charAt(i-1)=='/') {
 				
 				tempStr += s;
 			}
