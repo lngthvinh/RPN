@@ -130,6 +130,7 @@ public class Program extends JFrame {
 	private JButton button_4;
 	private JPanel panel_1;
 	private JLabel label;
+	private JButton button_5;
 	private void assignStandard(String assign) {
 		
 		u = new LinkedList<String>();
@@ -423,6 +424,25 @@ public class Program extends JFrame {
 		gbc_button_4.gridx = 4;
 		gbc_button_4.gridy = 0;
 		panel.add(button_4, gbc_button_4);
+		
+		button_5 = new JButton("( )");
+		button_5.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				textField.requestFocus();
+				try {
+					textField.getDocument().insertString(textField.getCaretPosition(), "()", null);
+				} catch (BadLocationException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				textField.setCaretPosition(textField.getCaretPosition()-1);
+			}
+		});
+		GridBagConstraints gbc_button_5 = new GridBagConstraints();
+		gbc_button_5.insets = new Insets(0, 0, 5, 5);
+		gbc_button_5.gridx = 5;
+		gbc_button_5.gridy = 0;
+		panel.add(button_5, gbc_button_5);
 		GridBagConstraints gbc_btnAbs = new GridBagConstraints();
 		gbc_btnAbs.insets = new Insets(0, 0, 0, 5);
 		gbc_btnAbs.gridx = 0;
