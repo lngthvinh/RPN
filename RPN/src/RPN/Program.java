@@ -21,7 +21,10 @@ import javax.swing.text.BadLocationException;
 
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.LinkedList;
@@ -657,6 +660,7 @@ public class Program extends JFrame {
 				textField.setText("");
 				textField_1.setText("");
 				textField_2.setText("");
+				textField_3.setText("");
 	            DefaultTableModel model = (DefaultTableModel) table.getModel();
 	            model.setRowCount(0);
 			}
@@ -689,6 +693,10 @@ public class Program extends JFrame {
 				"Token", "Stack", "Postfix"
 			}
 		) {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
 			boolean[] columnEditables = new boolean[] {
 				false, false, false
 			};
